@@ -14,7 +14,7 @@ object Task5 {
             'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'
     )
 
-    fun run(text: String) {
+    fun run(text: String = "очень секретный текст") {
         println("Task 5:")
         val index = (1..defaultAlphabet.lastIndex).random()
         print("Enter keyword: ")
