@@ -3,12 +3,13 @@ package tasks
 import toBitString
 import java.io.File
 import java.lang.Byte
+import kotlin.text.Typography.nbsp
 
 object Task4 {
 
     private const val defaultFile = "tests/task4/lorem-ipsum.txt"
 
-    fun run(text: String = "secret message") {
+    fun run(text: String = "something really secret") {
         println("Task 4:")
         Task4.encode(text)
         println(Task4.decode())
@@ -23,7 +24,7 @@ object Task4 {
             return
         }
 
-        val words = fileText
+        var words = fileText
                 .split(" ")
                 .toMutableList()
         val bits = textToEncode
@@ -31,14 +32,19 @@ object Task4 {
                 .toBitString()
 
         if (!words.isEmpty()) {
-            bits.forEachIndexed { index, bit ->
-                if (bit == '1') {
-                    words[index] = "${words[index]} "
+            var bitIndex = 0
+            words = words.map {
+                if (bitIndex < bits.length && bits[bitIndex] == '1') {
+                    bitIndex++
+                    "$it$nbsp"
+                } else {
+                    bitIndex++
+                    "$it "
                 }
-            }
+            }.toMutableList()
 
             file.printWriter().use {
-                it.print(words.joinToString(" "))
+                it.print(words.joinToString(""))
             }
         }
     }
@@ -48,20 +54,12 @@ object Task4 {
         val text = file.readText()
         val bits = StringBuilder()
 
-        var whitespaceCount = 0
-        for (index: Int in (0..text.lastIndex)) {
-            if (text[index] == ' ') {
-                whitespaceCount++
-            }
-
-            if (whitespaceCount == 1 && index + 1 != text.length && text[index + 1] != ' ') {
+        text.forEach {
+            if (it == ' ') {
                 bits.append('0')
-                whitespaceCount = 0
             }
-
-            if (whitespaceCount == 2) {
+            if (it == nbsp) {
                 bits.append('1')
-                whitespaceCount = 0
             }
         }
 
@@ -78,6 +76,6 @@ object Task4 {
         return String(bytes, Charsets.UTF_8)
     }
 
-    private fun isEncoded(text: String): Boolean = text.indexOf("  ") != -1
+    private fun isEncoded(text: String): Boolean = text.indexOf(nbsp) != -1
 
 }
